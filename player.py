@@ -8,5 +8,8 @@ class Player:
     def play(self, board) -> Tuple[int, int]:
         pass
 
+    def play_position(self, board, position) -> Tuple[int, int]:
+        pass
+
     def player_type(self) -> str:
         pass

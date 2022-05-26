@@ -18,6 +18,7 @@ class Game:
     player2: Player
 
     def __init__(self, player1, player2) -> None:
+        super().__init__()
         self.board = [[0, 0, 0],
                       [0, 0, 0],
                       [0, 0, 0]]
@@ -26,6 +27,28 @@ class Game:
         self.player1 = player1
         self.player2 = player2
         self.turn = 0
+        self.playing = False
+
+    def start(self):
+        #game_winner = self.winner()
+        #while game_winner == GameResult.CONTINUE:
+        #    self.play()
+        #    game_winner = self.winner()
+#
+        #self.display_board()
+        #print()
+        #print()
+        #if game_winner == GameResult.DRAW:
+        #    print("Draw !")
+        #else:
+        #    print(game_winner, " won !")
+        self.board = [[0, 0, 0],
+                      [0, 0, 0],
+                      [0, 0, 0]]
+        self.current_player = 1
+        self.turn = 0
+        self.playing = True
+
 
     def winner(self) -> GameResult:
         # rows
@@ -64,16 +87,41 @@ class Game:
         return GameResult.CONTINUE
 
     def play(self):
-        if self.current_player == 1:
-            print("Player 1's turn : ", self.player1.player_type())
-            self.display_board()
-            x, y = self.player1.play(self.board)
+        if self.winner() == GameResult.CONTINUE:
+            if self.current_player == 1:
+                # print("Player 1's turn : ", self.player1.player_type())
+                # self.display_board()
+                if self.player1.player_type() == "Human":
+                    return
+                x, y = self.player1.play(self.board)
+            else:
+                # print("Player 2's turn : ", self.player2.player_type())
+                # self.display_board()
+                if self.player2.player_type() == "Human":
+                    return
+                x, y = self.player2.play(self.board)
+            self.board[y][x] = self.current_player
+            self._switch_players()
         else:
-            print("Player 2's turn : ", self.player2.player_type())
-            self.display_board()
-            x, y = self.player2.play(self.board)
-        self.board[y][x] = self.current_player
-        self._switch_players()
+            self.playing = False
+
+    def play_human(self, position):
+        if self.current_player == 1:
+            if self.player1.player_type() == "Human":
+                x, y = self.player1.play_position(self.board, position)
+            else:
+                print("Error : not human")
+                return
+
+        else:
+            if self.player2.player_type() == "Human":
+                x, y = self.player1.play_position(self.board, position)
+            else:
+                print("Error : not human")
+                return
+        if x != -1 and y != -1:
+            self.board[y][x] = self.current_player
+            self._switch_players()
 
     def display_board(self):
         print("-----------------------------------")
