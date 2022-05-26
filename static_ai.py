@@ -1,3 +1,5 @@
+import random
+
 from player import *
 
 
@@ -12,8 +14,8 @@ class StaticAI(Player):
         # Check win possibility
         plays = _winning_plays(board, self.current_player)
         if len(plays) > 0:
-            print("Win : ", plays[0])
-            return plays[0]  # todo random
+            i = random.randint(0, len(plays)-1)
+            return plays[i]
 
         # Avoid loss todo
 
@@ -23,13 +25,13 @@ class StaticAI(Player):
             enemy_player = 1
         plays = _winning_plays(board, enemy_player)
         if len(plays) > 0:
-            print("Lose : ", plays[0])
-            return plays[0]  # todo random
+            i = random.randint(0, len(plays) - 1)
+            return plays[i]
 
         # Choose random best option
         plays = self._max_move(board)
-        print("Max : ", plays[0])
-        return plays[0]  # todo random
+        i = random.randint(0, len(plays) - 1)
+        return plays[i]
 
     def _max_move(self, board) -> list[Tuple[int, int]]:
         max_value = 0

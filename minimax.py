@@ -10,9 +10,8 @@ class MiniMax(Player):
     def __init__(self, current_player):
         super().__init__(current_player)
 
-    def play(self, actual_board) -> Tuple[int, int]:
-        board = copy.deepcopy(actual_board)
-        _, position = minimax(board, self.current_player, self.current_player)
+    def play(self, board) -> Tuple[int, int]:
+        value, position = minimax(board, self.current_player, self.current_player)
         return position
 
     def player_type(self):
@@ -41,18 +40,22 @@ def minimax(board, player_turn, player_to_maximize):
                 board[i][j] = player_turn
                 # Recursion
                 value, _ = minimax(board, game.switch_players(player_turn), player_to_maximize)
-                if value > max_value:
-                    max_value = value
-                    max_plays.append((j, i))
-                if value < min_value:
-                    min_value = value
-                    min_plays.append((j, i))
+                # Undo
+                board[i][j] = 0
+
                 if value == max_value:
                     max_plays.append((j, i))
                 if value == min_value:
                     min_plays.append((j, i))
-                # Undo
-                board[i][j] = 0
+                if value > max_value:
+                    max_value = value
+                    max_plays.clear()
+                    max_plays.append((j, i))
+                if value < min_value:
+                    min_value = value
+                    min_plays.clear()
+                    min_plays.append((j, i))
+
     if player_turn == player_to_maximize:
         i = random.randint(0, len(max_plays)-1)
         return max_value, max_plays[i]

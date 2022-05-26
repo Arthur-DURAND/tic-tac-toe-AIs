@@ -88,10 +88,12 @@ class Game:
         if winner(self.board) != GameResult.CONTINUE:
             self.playing = False
 
-    def display_board(self):
-        print("-----------------------------------")
-        for i in range(3):
-            print(self.board[i][0], " ; ", self.board[i][1], " ; ", self.board[i][2])
+
+def display_board(board):
+    print("-----------------------------------")
+    for i in range(3):
+        print(board[i][0], " ; ", board[i][1], " ; ", board[i][2])
+
 
 def switch_players(current_player):
     if current_player == 1:
