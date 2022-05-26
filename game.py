@@ -49,60 +49,22 @@ class Game:
         self.turn = 0
         self.playing = True
 
-
-    def winner(self) -> GameResult:
-        # rows
-        for i in range(3):
-            if self.board[i][0] != 0 and \
-                    self.board[i][0] == self.board[i][1] and \
-                    self.board[i][0] == self.board[i][2]:
-                return GameResult(self.board[i][0])
-
-        # columns
-        for i in range(3):
-            if self.board[0][i] != 0 and \
-                    self.board[0][i] == self.board[1][i] and \
-                    self.board[0][i] == self.board[2][i]:
-                return GameResult(self.board[0][i])
-
-        # diagonals
-        if self.board[0][0] != 0 and \
-                self.board[0][0] == self.board[1][1] and \
-                self.board[1][1] == self.board[2][2]:
-            return GameResult(self.board[0][0])
-
-        if self.board[2][0] != 0 and \
-                self.board[2][0] == self.board[1][1] and \
-                self.board[2][0] == self.board[0][2]:
-            return GameResult(self.board[2][0])
-
-        empty_space = False
-        for i in range(3):
-            for j in range(3):
-                if self.board[i][j] == 0:
-                    empty_space = True
-        if not empty_space:
-            return GameResult.DRAW
-
-        return GameResult.CONTINUE
-
     def play(self):
-        if self.winner() == GameResult.CONTINUE:
-            if self.current_player == 1:
-                # print("Player 1's turn : ", self.player1.player_type())
-                # self.display_board()
-                if self.player1.player_type() == "Human":
-                    return
-                x, y = self.player1.play(self.board)
-            else:
-                # print("Player 2's turn : ", self.player2.player_type())
-                # self.display_board()
-                if self.player2.player_type() == "Human":
-                    return
-                x, y = self.player2.play(self.board)
-            self.board[y][x] = self.current_player
-            self._switch_players()
+        if self.current_player == 1:
+            # print("Player 1's turn : ", self.player1.player_type())
+            # self.display_board()
+            if self.player1.player_type() == "Human":
+                return
+            x, y = self.player1.play(self.board)
         else:
+            # print("Player 2's turn : ", self.player2.player_type())
+            # self.display_board()
+            if self.player2.player_type() == "Human":
+                return
+            x, y = self.player2.play(self.board)
+        self.board[y][x] = self.current_player
+        self.current_player = switch_players(self.current_player)
+        if winner(self.board) != GameResult.CONTINUE:
             self.playing = False
 
     def play_human(self, position):
@@ -121,15 +83,55 @@ class Game:
                 return
         if x != -1 and y != -1:
             self.board[y][x] = self.current_player
-            self._switch_players()
+            self.current_player = switch_players(self.current_player)
+
+        if winner(self.board) != GameResult.CONTINUE:
+            self.playing = False
 
     def display_board(self):
         print("-----------------------------------")
         for i in range(3):
             print(self.board[i][0], " ; ", self.board[i][1], " ; ", self.board[i][2])
 
-    def _switch_players(self):
-        if self.current_player == 1:
-            self.current_player = 2
-        else :
-            self.current_player = 1
+def switch_players(current_player):
+    if current_player == 1:
+        return 2
+    else :
+        return 1
+
+
+def winner(board) -> GameResult:
+    # rows
+    for i in range(3):
+        if board[i][0] != 0 and \
+                board[i][0] == board[i][1] and \
+                board[i][0] == board[i][2]:
+            return GameResult(board[i][0])
+
+    # columns
+    for i in range(3):
+        if board[0][i] != 0 and \
+                board[0][i] == board[1][i] and \
+                board[0][i] == board[2][i]:
+            return GameResult(board[0][i])
+
+    # diagonals
+    if board[0][0] != 0 and \
+            board[0][0] == board[1][1] and \
+            board[1][1] == board[2][2]:
+        return GameResult(board[0][0])
+
+    if board[2][0] != 0 and \
+            board[2][0] == board[1][1] and \
+            board[2][0] == board[0][2]:
+        return GameResult(board[2][0])
+
+    empty_space = False
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == 0:
+                empty_space = True
+    if not empty_space:
+        return GameResult.DRAW
+
+    return GameResult.CONTINUE
