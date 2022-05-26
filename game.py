@@ -1,7 +1,5 @@
 from enum import Enum
-from player import *
-from static_ai import *
-from human import *
+from players.human import *
 
 
 class GameResult(Enum):

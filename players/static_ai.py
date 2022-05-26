@@ -1,6 +1,6 @@
 import random
 
-from player import *
+from players.player import *
 
 
 class StaticAI(Player):

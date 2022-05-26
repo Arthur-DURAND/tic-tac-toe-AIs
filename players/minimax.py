@@ -1,9 +1,7 @@
-import copy
 import random
 
 import game
-from player import *
-import copy
+from players.player import *
 
 
 class MiniMax(Player):
