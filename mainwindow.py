@@ -1,4 +1,5 @@
 from tkinter import *
+from game import *
 
 
 class MainWindow:
@@ -6,6 +7,13 @@ class MainWindow:
         super().__init__()
 
         self.game = game
+        self.delay = 1000
+        self.game_number = 1
+        self.current_game_number = 0
+        self.loop_playing = False
+        self.player1_win = 0
+        self.player2_win = 0
+        self.draws = 0
 
         # window
         self.window = Tk()
@@ -18,13 +26,23 @@ class MainWindow:
         infos = Frame(self.window, height=int(1 / 6 * window_size) - line_size, width=window_size,
                       background="#606060")  # 525054
         line = Frame(self.window, height=line_size, width=window_size, background="#1e1e1f")
+
         # Buttons
-        start_button = Button(infos, text="Start game", command=self.start_game)
-        start_button.place(x=10, y=10)
-        # bouton stop (rename start)
-        # input delay + bouton apply
+        self.start_button = Button(infos, text="Start game", command=self.start_game)
+        self.start_button.place(x=10, y=10)
+
+        self.delay_entry = Entry(infos, width=10)
+        self.delay_entry.insert(0, str(self.delay))
+        self.delay_entry.place(x=10, y=40)
+        self.delay_entry.bind('<Return>', self.change_delay)
+
+        self.game_number_entry = Entry(infos, width=10)
+        self.game_number_entry.insert(0, str(self.game_number))
+        self.game_number_entry.place(x=10, y=70)
+        self.game_number_entry.bind('<Return>', self.change_game_number)
+
+        # TODO
         # input chose ai 1 & 2
-        # input number of game
         # display results (reset on start)
 
         # Board
@@ -47,7 +65,6 @@ class MainWindow:
         line.pack(side=TOP)
         board.pack(side=BOTTOM, fill=BOTH, expand=True)
 
-        self.delay = 100
         self.window.after(self.delay, self.clock())
         self.window.mainloop()
 
@@ -59,17 +76,70 @@ class MainWindow:
             self.game.play_human(position)
             self.display_board()
 
+    def change_delay(self, event):
+        new_delay = self.delay
+        try:
+            new_delay = int(self.delay_entry.get())
+        except ValueError:
+            pass
+        if new_delay > 0:
+            self.delay = new_delay
+
+    def change_game_number(self, event):
+        game_number = self.game_number
+        try:
+            game_number = int(self.game_number_entry.get())
+        except ValueError:
+            pass
+        if game_number > 0:
+            self.game_number = game_number
+
     def start_game(self):
-        # Clear canvas
-        for canvas in self.cells:
-            canvas.delete("all")
-        # Start game
-        self.game.start()
+        if self.game.playing:
+            self.game.playing = False
+            self.start_button["text"] = "Start game"
+            self.loop_playing = False
+        else:
+            # Clear canvas
+            for canvas in self.cells:
+                canvas.delete("all")
+            # Change button
+            self.start_button["text"] = "Stop game"
+            # Start game
+            self.loop_playing = True
+            self.game.start()
 
     def clock(self):
         if self.game.playing:
             self.game.play()
             self.display_board()
+        else:
+            if self.loop_playing:
+
+                result = winner(self.game.board)
+                if result == GameResult.PLAYER1:
+                    self.player1_win += 1
+                elif result == GameResult.PLAYER2:
+                    self.player2_win += 1
+                elif result == GameResult.DRAW:
+                    self.draws += 1
+
+                self.current_game_number += 1
+                if self.current_game_number >= self.game_number:
+                    self.start_button["text"] = "Start game"
+                    self.current_game_number = 0
+                    self.loop_playing = False
+                    print("---")
+                    print(self.player1_win)
+                    print(self.player2_win)
+                    print(self.draws)
+                    self.player1_win = 0
+                    self.player2_win = 0
+                    self.draws = 0
+                else:
+                    for canvas in self.cells:
+                        canvas.delete("all")
+                    self.game.start()
         self.window.after(self.delay, self.clock)
 
     def display_board(self):
