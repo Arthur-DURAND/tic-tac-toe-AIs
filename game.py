@@ -1,5 +1,6 @@
 from enum import Enum
 from players.human import *
+from players.reinforcement_learning_ai.reinforcement_learning_ai import ReinforcementLearningAI
 
 
 class GameResult(Enum):
@@ -62,7 +63,19 @@ class Game:
             x, y = self.player2.play(self.board)
         self.board[y][x] = self.current_player
         self.current_player = switch_players(self.current_player)
-        if winner(self.board) != GameResult.CONTINUE:
+        game_result = winner(self.board)
+        if game_result != GameResult.CONTINUE:
+            if game_result == GameResult.PLAYER1:
+                self.player1.feed_reward(1)
+                self.player2.feed_reward(0)
+            elif game_result == GameResult.PLAYER2:
+                self.player1.feed_reward(0)
+                self.player2.feed_reward(1)
+            else:
+                self.player1.feed_reward(0.1)
+                self.player2.feed_reward(0.5)
+            self.player1.reset_ai()
+            self.player2.reset_ai()
             self.playing = False
 
     def play_human(self, position):

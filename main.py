@@ -3,11 +3,12 @@ from game import *
 from players.static_ai import *
 from players.minimax import *
 from players.random_ai import *
+from players.reinforcement_learning_ai.reinforcement_learning_ai import *
 
 if __name__ == '__main__':
 
     player1 = Random(1)
-    player2 = StaticAI(2)
+    player2 = ReinforcementLearningAI(2)
     game = Game(player1, player2)
 
     window_size = 800

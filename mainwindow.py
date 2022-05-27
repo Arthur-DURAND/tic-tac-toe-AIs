@@ -18,8 +18,14 @@ class MainWindow:
         infos = Frame(self.window, height=int(1 / 6 * window_size) - line_size, width=window_size,
                       background="#606060")  # 525054
         line = Frame(self.window, height=line_size, width=window_size, background="#1e1e1f")
+        # Buttons
         start_button = Button(infos, text="Start game", command=self.start_game)
         start_button.place(x=10, y=10)
+        # bouton stop (rename start)
+        # input delay + bouton apply
+        # input chose ai 1 & 2
+        # input number of game
+        # display results (reset on start)
 
         # Board
         board = Frame(self.window, height=window_size, width=window_size, background="#2b2b2b")
@@ -41,7 +47,7 @@ class MainWindow:
         line.pack(side=TOP)
         board.pack(side=BOTTOM, fill=BOTH, expand=True)
 
-        self.delay = 1000
+        self.delay = 100
         self.window.after(self.delay, self.clock())
         self.window.mainloop()
 

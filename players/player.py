@@ -11,5 +11,11 @@ class Player:
     def play_position(self, board, position) -> Tuple[int, int]:
         pass
 
+    def feed_reward(self, reward):
+        pass
+
+    def reset_ai(self):
+        pass
+
     def player_type(self) -> str:
         pass
