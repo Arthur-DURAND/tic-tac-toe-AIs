@@ -52,7 +52,7 @@ class ReinforcementLearningAI(Player):
         return str_hash
 
     def player_type(self):
-        return "Reinforcement learning AI"
+        return "RL AI"
 
     def feed_reward(self, reward):
         for st in reversed(self.states):

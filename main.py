@@ -7,8 +7,8 @@ from players.reinforcement_learning_ai.reinforcement_learning_ai import *
 
 if __name__ == '__main__':
 
-    player2 = StaticAI(2)
-    player1 = ReinforcementLearningAI(1)
+    player2 = Human(2)
+    player1 = Human(1)
     game = Game(player1, player2)
 
     window_size = 800
